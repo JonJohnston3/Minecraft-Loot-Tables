@@ -19,7 +19,13 @@ def cd(newdir):
 
 # -- Section 2: Parse Files --
 
+class LootPool:
+    def __init__(self, loot_pool)
+
 class LootItem:
+    min = None
+    max = None
+
     def __init__(self, loot_entry):
         self.type = loot_entry.get('type').replace('minecraft:', '')
         self.weight = loot_entry.get('weight', 1)
@@ -27,13 +33,38 @@ class LootItem:
         self.name = loot_entry.get('name','empty_slot').replace('minecraft:', '')
 
         if self.functions is not None:
-            self.parse_functions(self.functions)
+            #print(self.functions[0]['function'])
+            self.parse_functions()
     
     def __repr__(self):
         return self.name + " loot object"
 
     def parse_functions(self):
+        function_list = []
+        for function in self.functions:
+            if function['function'] == 'minecraft:enchant_randomly':
+                function_list.append('enchant_randomly')
+            elif function['function'] == 'minecraft:set_count':
+                function_list.append('set_count')
+                self.min = function['count']['min']
+                self.max = function['count']['max']
+                # print(type(str(self.min)), str(self.max))
+        self.functions = function_list
+
+    def describe(self):
+        description = ""
+        if self.functions:
+            for function in self.functions:
+                if function == 'set_count':
+                    description += (str(self.min) + ' to ' + str(self.max) + ' ')
+                elif function == 'enchant_randomly':
+                    description += 'randomly enchanted '
         
+        description += self.name.replace('_', ' ')
+        description += ' with weight ' + str(self.weight)
+
+        print(description)
+
 
 
 
@@ -50,10 +81,10 @@ def get_loot(filename):
         for entry in pool['entries']:
             loot_list.append(LootItem(entry))
         
-    for loot in loot_list:
-        print(loot)
     return loot_list
 
-get_loot('MinecraftLootTables/abandoned_mineshaft.json')
+my_loot = get_loot('MinecraftLootTables/abandoned_mineshaft.json')
+for loot in my_loot:
+    loot.describe()
 
 # -- Section 3: Present Data --
