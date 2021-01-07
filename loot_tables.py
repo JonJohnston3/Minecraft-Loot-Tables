@@ -22,6 +22,7 @@ def cd(newdir):
 class LootPool:
     def __init__(self, loot_pool)
 
+# Class for individual item in loot pool
 class LootItem:
     min = None
     max = None
@@ -33,14 +34,15 @@ class LootItem:
         self.name = loot_entry.get('name','empty_slot').replace('minecraft:', '')
 
         if self.functions is not None:
-            #print(self.functions[0]['function'])
             self.parse_functions()
     
     def __repr__(self):
         return self.name + " loot object"
 
+    # Converts item functions into object attributes
     def parse_functions(self):
         function_list = []
+
         for function in self.functions:
             if function['function'] == 'minecraft:enchant_randomly':
                 function_list.append('enchant_randomly')
@@ -48,9 +50,11 @@ class LootItem:
                 function_list.append('set_count')
                 self.min = function['count']['min']
                 self.max = function['count']['max']
-                # print(type(str(self.min)), str(self.max))
+
         self.functions = function_list
 
+    # Prints loosely formatted string describing the loot object
+    # !!Rewrite to use .format() for legibility!!
     def describe(self):
         description = ""
         if self.functions:
@@ -83,8 +87,12 @@ def get_loot(filename):
         
     return loot_list
 
+
+
+# -- Section 3: Present Data --
+
+# Testing Code
+
 my_loot = get_loot('MinecraftLootTables/abandoned_mineshaft.json')
 for loot in my_loot:
     loot.describe()
-
-# -- Section 3: Present Data --
