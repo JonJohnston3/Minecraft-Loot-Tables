@@ -20,7 +20,34 @@ def cd(newdir):
 # -- Section 2: Parse Files --
 
 class LootPool:
-    def __init__(self, loot_pool)
+    def __init__(self, loot_pool):
+        self.parse_rolls(loot_pool.get('rolls'))
+        self.parse_entries(loot_pool.get('entries'))
+
+    def parse_rolls(self, rolls):
+        if type(rolls) is dict:
+            self.min_rolls = rolls.get('min')
+            self.max_rolls = rolls.get('max')
+        else:
+            self.min_rolls = rolls
+            self.max_rolls = rolls
+
+    def parse_entries(self, entries):
+        self.entries = []
+        for entry in entries:
+            self.entries.append(LootItem(entry))
+
+    def describe(self):
+        description = "Pool using "
+        if self.min_rolls == self.max_rolls:
+            description += str(self.min_rolls) + ' roll(s) '
+        else:
+            description += str(self.min_rolls) + ' to ' + str(self.max_rolls) + ' rolls '
+        description += 'with the loot set:\n'
+        for entry in self.entries:
+            description += '\t' + entry.describe() + '\n'
+        return description
+
 
 # Class for individual item in loot pool
 class LootItem:
@@ -67,7 +94,7 @@ class LootItem:
         description += self.name.replace('_', ' ')
         description += ' with weight ' + str(self.weight)
 
-        print(description)
+        return description
 
 
 
@@ -75,17 +102,15 @@ class LootItem:
 # Extract loot table data from json and reorganize it
 def get_loot(filename):
     loot_dict = None
-    loot_list = []
+    loot_pools = []
 
     with open(filename) as loot_file:
         loot_dict = json.load(loot_file)
     
-    print()
     for pool in loot_dict['pools']:
-        for entry in pool['entries']:
-            loot_list.append(LootItem(entry))
+        loot_pools.append(LootPool(pool))
         
-    return loot_list
+    return loot_pools
 
 
 
@@ -95,4 +120,4 @@ def get_loot(filename):
 
 my_loot = get_loot('MinecraftLootTables/abandoned_mineshaft.json')
 for loot in my_loot:
-    loot.describe()
+    print(loot.describe())
