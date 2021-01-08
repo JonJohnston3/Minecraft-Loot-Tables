@@ -50,6 +50,16 @@ class LootPool:
 
 
 # Class for individual item in loot pool
+class LootTable:
+    def __init__(self, filename, file):
+        self.name = filename.replace('.txt','').replace('_', ' ')
+    
+    def __repr__(self):
+        return self.name + 'loot table'
+    
+    def parse_file(self, file):
+        pass
+
 class LootItem:
     min = None
     max = None
