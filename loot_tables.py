@@ -15,10 +15,33 @@ def cd(newdir):
     finally:
         os.chdir(prevdir)
 
-# print(os.getcwd())
+
 
 # -- Section 2: Parse Files --
 
+# Class for entire loot table
+class LootTable:
+    def __init__(self, filename):
+        self.name = filename.replace('.json','').replace('_', ' ')
+        with open(filename) as loot_file:
+            self.parse_dict(json.load(loot_file))        
+
+    def __repr__(self):
+        return self.name + ' loot table'
+    
+    def parse_dict(self, loot_dict):
+        self.loot_pools = []
+        self.type = loot_dict.get('type').replace('minecraft:','')
+        for pool in loot_dict.get('pools'):
+            self.loot_pools.append(LootPool(pool))
+    
+    def describe(self):
+        description = "{name} loot table containing {count} loot pool(s)\n".format(name = self.name.title(), count = len(self.loot_pools))
+        for i in range(len(self.loot_pools)):
+            description += str(i + 1) + '. ' + self.loot_pools[i].describe()
+        return description
+
+# Class for loot pool in loot table
 class LootPool:
     def __init__(self, loot_pool):
         self.parse_rolls(loot_pool.get('rolls'))
@@ -50,16 +73,6 @@ class LootPool:
 
 
 # Class for individual item in loot pool
-class LootTable:
-    def __init__(self, filename, file):
-        self.name = filename.replace('.txt','').replace('_', ' ')
-    
-    def __repr__(self):
-        return self.name + 'loot table'
-    
-    def parse_file(self, file):
-        pass
-
 class LootItem:
     min = None
     max = None
@@ -128,6 +141,12 @@ def get_loot(filename):
 
 # Testing Code
 
-my_loot = get_loot('MinecraftLootTables/abandoned_mineshaft.json')
-for loot in my_loot:
-    print(loot.describe())
+print(os.getcwd())
+with cd('C:/Users/Jon/Documents/Loot Tables/chests'):
+    for file in os.listdir(os.getcwd()):
+        filename = os.fsdecode(file)
+        print(filename)
+    #print(os.getcwd())
+
+# my_loot = LootTable('MinecraftLootTables/abandoned_mineshaft.json')
+# print(my_loot.describe())
