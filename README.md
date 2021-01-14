@@ -8,8 +8,12 @@ The intent of this loot table parser is to be a relatively minimalistic solution
 Python 3.8
 
 ## Setup
+Currently the script needs to be pointed directly to the folder containing the loot table files manually. I am planning on changing this so it just needs to be placed in the right folder and it will do all the work when run.
 
-## Projects Status
+## Project Status
+Under development
+
+I plan on creating a simple script that only needs to be placed in a folder with the relevant files and run to produce a more legible version of the loot table data. Once this is done I may add statistical analysis, GUI, and other QoL features.
 
 ## License
-
+This project is licensed under the terms of the **MIT** license.
